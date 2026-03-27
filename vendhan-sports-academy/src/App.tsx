@@ -3,6 +3,57 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/*
+IMAGE CHANGE GUIDE - Vendhan Sports Academy
+==========================================
+
+LOGO:
+- Location: Navbar component (around line 180)
+- Current: /uploads/academy logo.png
+- To change: Replace the src in the img tag with your new logo path
+
+HERO BACKGROUND:
+- Location: Hero component (around line 301)
+- Current: Unsplash sports image
+- To change: Replace the src URL with your own image path
+
+GALLERY IMAGES:
+- Location: GallerySection component (around line 509)
+- Current: Automatically loads from /uploads/public/images/ directory
+- To add: Place image files in /workspaces/Vendhan/vendhan-sports-academy/uploads/public/images/
+- Supported: jpg, jpeg, png, gif, webp
+
+TRAINING PROGRAM IMAGES:
+- Location: ProgramsSection component (around line 392)
+- Current: Stored in database, fallback to Unsplash
+- To change: Use admin panel to update program.image field
+- Upload via: /api/upload-image endpoint
+
+FACILITY RENTAL IMAGES:
+- Location: FacilityRental component (around line 457)
+- Current: Two static Unsplash images
+- To change: Replace the src URLs with your own facility images
+
+FACILITY IMAGES:
+- Location: FacilitySection component (around line 632)
+- Current: Stored in database, fallback to Unsplash
+- To change: Use admin panel to update facility.image field
+- Upload via: /api/upload-image endpoint
+
+CAMP POSTER IMAGES:
+- Location: CampSection component (around line 885)
+- Current: Stored in database, fallback to Unsplash
+- To change: Use admin panel to update camp.posterUrl field
+- Upload via: /api/upload-image endpoint
+
+UPLOAD PROCESS:
+1. Place images in /uploads/ directory
+2. Use /uploads/filename.jpg as the path
+3. For database images: Use admin panel or API endpoints
+4. For automatic gallery: Just add files to /uploads/public/images/
+
+*/
+
 import React, { useState, useEffect, useMemo, Component } from 'react';
 import { 
   Menu, X, Phone, Mail, Instagram, Facebook, Twitter, 
@@ -175,8 +226,11 @@ const Navbar = ({ user, isAdmin, onLogin, onLogout, activeSection, onNavClick }:
           onClick={() => handleLinkClick('home')}
         >
           <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-lg border-2 border-primary/20 mb-1">
+            {/* LOGO CHANGE: Update the src below to change the academy logo */}
+            {/* Current: Uses /uploads/academy logo.png */}
+            {/* To change: Replace the src with your new logo path */}
             <img 
-              src="https://api.dicebear.com/7.x/initials/svg?seed=VSA&backgroundColor=f27d26" 
+              src="/uploads/academy%20logo.png" 
               alt="Academy Logo" 
               className="w-full h-full object-cover"
             />
@@ -289,6 +343,11 @@ const Navbar = ({ user, isAdmin, onLogin, onLogout, activeSection, onNavClick }:
 };
 
 const Hero = ({ onExplore }: { onExplore: () => void }) => {
+  // HERO SECTION BACKGROUND IMAGE: Change the main hero background image
+  // Current: Unsplash sports image
+  // To change: Replace the src URL with your own image path (e.g., /uploads/hero-image.jpg)
+  // For local images: Upload to /uploads/ directory and use /uploads/filename.jpg
+  
   return (
     <section id="home" className="relative h-screen flex items-center overflow-hidden">
       {/* Background Images */}
@@ -359,6 +418,11 @@ const Hero = ({ onExplore }: { onExplore: () => void }) => {
 };
 
 const ProgramsSection = ({ programs, onEnroll }: { programs: Program[], onEnroll: (p: Program) => void }) => {
+  // TRAINING PROGRAMMES IMAGES: Program images are stored in the database
+  // To add/change images: Use the admin panel to update program images
+  // Images should be uploaded via /api/upload-image endpoint
+  // Default fallback: Unsplash sports image
+  
   return (
     <section id="programs" className="section-padding bg-white dark:bg-neutral-950">
       <div className="text-center mb-16">
@@ -386,6 +450,10 @@ const ProgramsSection = ({ programs, onEnroll }: { programs: Program[], onEnroll
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 referrerPolicy="no-referrer"
               />
+              {/* PROGRAM IMAGES: Each training program displays its own image
+              // To change: Use admin panel to update program.image field
+              // Upload images via /api/upload-image endpoint
+              // Fallback: Unsplash sports image if no image is set */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </div>
             <div className="p-8">
@@ -446,6 +514,10 @@ const FacilityRental = ({ onBook }: { onBook: () => void }) => {
         </div>
 
         <div className="lg:w-1/2 grid grid-cols-2 gap-4">
+          {/* FACILITY RENTAL IMAGES: Static images for facility showcase
+          // To change: Replace the src URLs with your own facility images
+          // Upload to /uploads/ directory and use /uploads/filename.jpg
+          // Current: Two Unsplash images showing sports facilities */}
           <img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=400&h=500&auto=format&fit=crop" alt="Facility 1" className="rounded-2xl shadow-2xl" referrerPolicy="no-referrer" />
           <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=400&h=500&auto=format&fit=crop" alt="Facility 2" className="rounded-2xl shadow-2xl mt-8" referrerPolicy="no-referrer" />
         </div>
@@ -507,6 +579,11 @@ const EventsSection = ({ events, onRegister }: { events: Event[], onRegister: (e
 };
 
 const GallerySection = ({ items }: { items: GalleryItem[] }) => {
+  // GALLERY IMAGES: Images are automatically loaded from /uploads/public/images/ directory
+  // To add more images: Place image files in /workspaces/Vendhan/vendhan-sports-academy/uploads/public/images/
+  // Supported formats: jpg, jpeg, png, gif, webp
+  // Images will appear in the gallery with category "Gallery"
+  
   const [filter, setFilter] = useState('All');
   const categories = ['All', ...new Set(items.map(item => item.category))];
 
@@ -621,6 +698,10 @@ const FacilitySection = ({ facilities }: { facilities: any[] }) => {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   referrerPolicy="no-referrer"
                 />
+                {/* FACILITY IMAGES: Each facility displays its own image
+                // To change: Use admin panel to update facility.image field
+                // Upload images via /api/upload-image endpoint
+                // Fallback: Unsplash sports facility image if no image is set */}
               </div>
               <div className="p-8">
                 <h3 className="text-2xl font-bold mb-4 dark:text-white">{facility.name}</h3>
@@ -851,6 +932,11 @@ const CoachesSection = ({ coaches }: { coaches: Coach[] }) => {
 };
 
 const CampSection = ({ camps, onRegister }: { camps: Camp[], onRegister: (c: Camp) => void }) => {
+  // SUMMER CAMP POSTERS: Camp poster images are stored in the database
+  // To add/change posters: Use the admin panel to update camp posterUrl
+  // Images should be uploaded via /api/upload-image endpoint
+  // Default fallback: Unsplash camp image
+  
   if (camps.length === 0) return null;
 
   return (
@@ -869,6 +955,10 @@ const CampSection = ({ camps, onRegister }: { camps: Camp[], onRegister: (c: Cam
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
             />
+            {/* CAMP POSTER IMAGES: Each camp displays its poster image
+            // To change: Use admin panel to update camp.posterUrl field
+            // Upload images via /api/upload-image endpoint
+            // Fallback: Unsplash camp image if no poster is set */}
             <div className="absolute top-6 left-6 bg-accent text-white px-6 py-2 rounded-full font-bold shadow-lg">
               {camp.type}
             </div>

@@ -59,8 +59,12 @@ async function startServer() {
     res.json({ url: `/uploads/${req.file.filename}` });
   });
 
-  // Serve uploads folder
-  app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+  // STATIC FILE SERVING: Serves images from uploads directory
+  // Logo: /uploads/academy logo.png
+  // Gallery images: /uploads/public/images/
+  // Program images: stored in database, served via upload endpoint
+  // Camp posters: stored in database, served via upload endpoint
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
   // Generic CRUD helper for simple tables
   const setupCRUD = (tableName: string, fields: string[]) => {
@@ -229,8 +233,27 @@ async function startServer() {
   });
 
   app.get("/api/gallery", (req, res) => {
+    // GALLERY API: Returns gallery items from database + automatic images from uploads/public/images/
+    // Database items: Manually added via admin panel
+    // File images: Automatically included from /uploads/public/images/ directory
+    // Supported formats: jpg, jpeg, png, gif, webp
     const gallery = db.prepare('SELECT * FROM gallery').all();
-    res.json(gallery);
+    
+    // Add images from uploads/public/images directory
+    const imagesDir = path.join(__dirname, 'uploads', 'public', 'images');
+    let fileImages = [];
+    if (fs.existsSync(imagesDir)) {
+      const files = fs.readdirSync(imagesDir);
+      fileImages = files
+        .filter(file => /\.(jpg|jpeg|png|gif|webp)$/i.test(file))
+        .map(file => ({
+          id: `file_${file}`,
+          url: `/uploads/public/images/${file}`,
+          category: 'Gallery'
+        }));
+    }
+    
+    res.json([...gallery, ...fileImages]);
   });
 
   app.post("/api/gallery", (req, res) => {
