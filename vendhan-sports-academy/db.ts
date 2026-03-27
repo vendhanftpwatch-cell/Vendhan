@@ -116,7 +116,7 @@ const infoCount = db.prepare('SELECT COUNT(*) as count FROM academy_info').get()
 if (infoCount.count === 0) {
   db.prepare(`
     INSERT INTO academy_info (id, name, established, location, motto, students, coaches, programs)
-    VALUES (1, 'Vendhan Sports Academy', 2015, 'Oddanchathram, Tamilnadu', 'Excellence in Sports, Excellence in Life', 500, 25, 10)
+    VALUES (1, 'VENDHAN Sports Academy', 2015, 'Oddanchathram, Tamilnadu', 'Excellence in Sports, Excellence in Life', 20, 25, 10)
   `).run();
 }
 
@@ -126,7 +126,7 @@ if (newsCount.count === 0) {
     "Real Madrid reaches Champions League semi-finals after thrilling victory!",
     "LeBron James sets new record for most career points in NBA history.",
     "Fun Fact: The first Olympic Games were held in 776 BC in Olympia, Greece.",
-    "Announcement: Vendhan Academy to host Inter-District Silambam Meet in May!",
+    "Announcement: VENDHAN Sports Academy to host Inter-District Silambam Meet in May!",
     "Fun Fact: A football is actually an 'oblate spheroid', not a perfect sphere.",
     "World News: India wins the Cricket Test Series against Australia 3-1.",
     "Fun Fact: Golf is the only sport to have been played on the moon.",
@@ -144,6 +144,8 @@ if (programCount.count === 0) {
     { name: 'Yoga', description: 'Enhance mental clarity and physical flexibility through traditional practices.', image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop' },
     { name: 'Athletics', description: 'Build speed, endurance, and competitive performance.', image: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=800&auto=format&fit=crop' },
     { name: 'Skating', description: 'Improve balance, coordination, and agility through skating drills.', image: 'https://images.unsplash.com/photo-1520066331048-1335029e9673?q=80&w=800&auto=format&fit=crop' },
+    { name: 'Aerobic', description: 'High-energy cardio and fitness training to boost stamina and overall health.', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop' },
+    { name: 'Music', description: 'Learn rhythm, coordination, and performance through music training.', image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=800&auto=format&fit=crop' },
   ];
   const insert = db.prepare('INSERT INTO programs (name, description, image) VALUES (?, ?, ?)');
   programs.forEach(p => insert.run(p.name, p.description, p.image));

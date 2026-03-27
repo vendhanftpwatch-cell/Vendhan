@@ -225,14 +225,14 @@ const Navbar = ({ user, isAdmin, onLogin, onLogout, activeSection, onNavClick }:
           className="flex flex-col items-center cursor-pointer" 
           onClick={() => handleLinkClick('home')}
         >
-          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center overflow-hidden shadow-lg border-2 border-primary/20 mb-1">
+          <div className="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden shadow-lg mb-1">
             {/* LOGO CHANGE: Update the src below to change the academy logo */}
             {/* Current: Uses /uploads/academy logo.png */}
             {/* To change: Replace the src with your new logo path */}
             <img 
               src="/uploads/academy%20logo.png" 
               alt="Academy Logo" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-full"
             />
           </div>
           <div className="text-center">
@@ -348,17 +348,41 @@ const Hero = ({ onExplore }: { onExplore: () => void }) => {
   // To change: Replace the src URL with your own image path (e.g., /uploads/hero-image.jpg)
   // For local images: Upload to /uploads/ directory and use /uploads/filename.jpg
   
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  const heroImages = [
+    'https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=1920&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=1920&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=1920&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=1920&auto=format&fit=crop',
+  ];
+
+  // Rotate images every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+  
   return (
     <section id="home" className="relative h-screen flex items-center overflow-hidden">
-      {/* Background Images */}
+      {/* Background Images Carousel with Zoom Effect */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent z-10" />
-        <img 
-          src="https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=1920&auto=format&fit=crop" 
-          alt="Hero Background" 
-          className="w-full h-full object-cover"
-          referrerPolicy="no-referrer"
-        />
+        <AnimatePresence mode='wait'>
+          <motion.img
+            key={currentImageIndex}
+            src={heroImages[currentImageIndex]}
+            alt="Hero Background" 
+            className="w-full h-full object-cover absolute inset-0"
+            referrerPolicy="no-referrer"
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ duration: 5, ease: 'easeInOut' }}
+          />
+        </AnimatePresence>
       </div>
 
       <div className="relative z-20 max-w-7xl mx-auto px-4 md:px-8 w-full">
@@ -369,7 +393,7 @@ const Hero = ({ onExplore }: { onExplore: () => void }) => {
           className="max-w-2xl"
         >
           <span className="inline-block px-4 py-1 bg-accent text-white rounded-full text-xs font-bold uppercase tracking-widest mb-6">
-            Vendhan Sports Academy
+            VENDHAN Sports Academy
           </span>
           <h1 className="text-5xl md:text-7xl text-white font-display font-black leading-tight mb-6">
             UNLEASH THE <span className="text-accent">POWER</span> WITHIN
@@ -390,10 +414,10 @@ const Hero = ({ onExplore }: { onExplore: () => void }) => {
         {/* Stats */}
         <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
-            { label: 'Medals Won', value: '500+', icon: Award },
-            { label: 'World Records', value: '10+', icon: Trophy },
-            { label: 'Years Excellence', value: '15+', icon: Clock },
-            { label: 'Students Trained', value: '2000+', icon: Users },
+            { label: 'Medals Won', value: '100+', icon: Award, description: 'in state and national competitions' },
+            { label: 'World Records', value: '1+', icon: Trophy, description: 'achieved by academy students' },
+            { label: 'Years Excellence', value: '2+', icon: Clock, description: 'in sports training' },
+            { label: 'Students Trained', value: '20+', icon: Users, description: 'across disciplines' },
           ].map((stat, i) => (
             <motion.div
               key={i}
@@ -408,8 +432,24 @@ const Hero = ({ onExplore }: { onExplore: () => void }) => {
               <div>
                 <div className="text-2xl font-black">{stat.value}</div>
                 <div className="text-xs uppercase tracking-wider text-white/60">{stat.label}</div>
+                {stat.description && <div className="text-[10px] text-white/50 mt-1">{stat.description}</div>}
               </div>
             </motion.div>
+          ))}
+        </div>
+
+        {/* Image Carousel Indicators */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-30">
+          {heroImages.map((_, index) => (
+            <motion.button
+              key={index}
+              onClick={() => setCurrentImageIndex(index)}
+              className={cn(
+                'h-2 rounded-full transition-all duration-300',
+                currentImageIndex === index ? 'bg-accent w-8' : 'bg-white/50 w-2 hover:bg-white'
+              )}
+              whileHover={{ scale: 1.2 }}
+            />
           ))}
         </div>
       </div>
@@ -689,9 +729,9 @@ const FacilitySection = ({ facilities }: { facilities: any[] }) => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="group bg-white dark:bg-neutral-900 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-neutral-100 dark:border-neutral-800"
+              className="group bg-white dark:bg-neutral-900 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-neutral-100 dark:border-neutral-800 relative"
             >
-              <div className="h-64 overflow-hidden">
+              <div className="h-64 overflow-hidden relative">
                 <img 
                   src={facility.image || "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800&auto=format&fit=crop"} 
                   alt={facility.name}
@@ -702,6 +742,9 @@ const FacilitySection = ({ facilities }: { facilities: any[] }) => {
                 // To change: Use admin panel to update facility.image field
                 // Upload images via /api/upload-image endpoint
                 // Fallback: Unsplash sports facility image if no image is set */}
+                <div className="absolute top-4 right-4 bg-accent text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg">
+                  Coming Soon!
+                </div>
               </div>
               <div className="p-8">
                 <h3 className="text-2xl font-bold mb-4 dark:text-white">{facility.name}</h3>
@@ -1243,7 +1286,7 @@ const JoinForm = () => {
         <div className="md:w-2/5 bg-primary p-12 text-white flex flex-col justify-center">
           <h2 className="text-4xl mb-6">Become a Champion</h2>
           <p className="text-white/70 mb-8">
-            Fill out the form to start your journey with Vendhan Sports Academy. Our team will contact you shortly.
+            Fill out the form to start your journey with VENDHAN Sports Academy. Our team will contact you shortly.
           </p>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
@@ -1256,7 +1299,7 @@ const JoinForm = () => {
             </div>
             <div className="flex items-center gap-4">
               <Mail size={20} className="text-accent" />
-              <span>info@vendhansports.com</span>
+              <span>vendhansportsacademy@gmail.com</span>
             </div>
           </div>
         </div>
@@ -1312,6 +1355,8 @@ const JoinForm = () => {
                 <option>Yoga</option>
                 <option>Athletics</option>
                 <option>Skating</option>
+                <option>Aerobic</option>
+                <option>Music</option>
               </select>
             </div>
             <button type="submit" disabled={isSubmitting} className="w-full btn btn-primary py-4">
@@ -1380,7 +1425,7 @@ const Footer = ({ academyInfo }: { academyInfo: any }) => {
         </div>
         
         <div className="pt-10 border-t border-white/10 text-center text-white/30 text-xs">
-          © {new Date().getFullYear()} {academyInfo?.name || "Vendhan Sports Academy"}. All Rights Reserved.
+          © {new Date().getFullYear()} {academyInfo?.name || "VENDHAN Sports Academy"}. All Rights Reserved.
         </div>
       </div>
     </footer>

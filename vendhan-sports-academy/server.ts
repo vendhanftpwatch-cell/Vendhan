@@ -6,11 +6,90 @@ import db from "./db";
 import multer from "multer";
 import mammoth from "mammoth";
 import fs from "fs";
+import nodemailer from "nodemailer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const upload = multer({ dest: 'uploads/' });
+
+// Email configuration - Gmail SMTP with App Password
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'vendhaninfotechodc@gmail.com',
+    pass: 'qros jprh tetj ftun'
+  }
+});
+
+// Test email connection
+transporter.verify((error, success) => {
+  if (error) {
+    console.log('Email service error:', error);
+  } else {
+    console.log('Email service ready:', success);
+  }
+});
+
+// Function to send admin notification email
+async function sendAdminNotification(registrationData: any) {
+  try {
+    const adminEmail = 'vendhaninfotechodc@gmail.com';
+    const { parentName, childName, age, email, phone, program, registrationType, type } = registrationData;
+    
+    const subject = `New Registration: ${parentName}`;
+    const htmlContent = `
+      <h2>New Registration Received</h2>
+      <p><strong>Type:</strong> ${type === 'program' ? 'Program Enrollment' : 'Event Registration'}</p>
+      <p><strong>Parent/Applicant Name:</strong> ${parentName}</p>
+      ${childName ? `<p><strong>Child Name:</strong> ${childName}</p>` : ''}
+      ${age ? `<p><strong>Age:</strong> ${age}</p>` : ''}
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone:</strong> ${phone}</p>
+      ${program ? `<p><strong>Program:</strong> ${program}</p>` : ''}
+      ${registrationType ? `<p><strong>Registration Type:</strong> ${registrationType}</p>` : ''}
+      <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p>
+    `;
+
+    await transporter.sendMail({
+      from: 'vendhaninfotechodc@gmail.com',
+      to: adminEmail,
+      subject: subject,
+      html: htmlContent
+    });
+    console.log('Admin notification email sent');
+  } catch (error) {
+    console.error('Error sending admin email:', error);
+  }
+}
+
+// Function to send confirmation email to user
+async function sendUserConfirmation(email: string, name: string) {
+  try {
+    const htmlContent = `
+      <h2>Welcome to VENDHAN Sports Academy</h2>
+      <p>Dear ${name},</p>
+      <p>Thank you for your interest in VENDHAN Sports Academy! We have received your registration/application.</p>
+      <p>Our team will review your submission and contact you shortly with more details.</p>
+      <p><strong>Contact Information:</strong></p>
+      <ul>
+        <li>Email: vendhansportsacademy@gmail.com</li>
+        <li>Academy: VENDHAN Sports Academy, Oddanchathram, Tamilnadu</li>
+      </ul>
+      <p>Best regards,<br/>VENDHAN Sports Academy Team</p>
+    `;
+
+    await transporter.sendMail({
+      from: 'vendhaninfotechodc@gmail.com',
+      to: email,
+      subject: 'Thank you for registering with VENDHAN Sports Academy',
+      html: htmlContent
+    });
+    console.log('User confirmation email sent to:', email);
+  } catch (error) {
+    console.error('Error sending user confirmation email:', error);
+  }
+}
 
 async function startServer() {
   const app = express();
@@ -316,6 +395,12 @@ async function startServer() {
         INSERT INTO registrations (type, targetId, parentName, childName, age, email, phone, registrationType, program, createdAt)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(type, targetId, parentName, childName, age, email, phone, registrationType, program, createdAt);
+      
+      // Send emails asynchronously
+      const registrationData = { type, targetId, parentName, childName, age, email, phone, registrationType, program };
+      sendAdminNotification(registrationData).catch(err => console.error('Admin email error:', err));
+      sendUserConfirmation(email, parentName).catch(err => console.error('User email error:', err));
+      
       res.json({ success: true, id: result.lastInsertRowid });
     } catch (err) {
       res.status(500).json({ success: false, error: (err as Error).message });
