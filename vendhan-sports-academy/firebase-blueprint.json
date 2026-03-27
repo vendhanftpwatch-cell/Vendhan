@@ -1,0 +1,140 @@
+{
+  "entities": {
+    "Program": {
+      "title": "Program",
+      "description": "Training programs offered by the academy",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "image": { "type": "string" },
+        "price": { "type": "number" }
+      },
+      "required": ["name", "description"]
+    },
+    "Coach": {
+      "title": "Coach",
+      "description": "Academy instructors",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "bio": { "type": "string" },
+        "image": { "type": "string" }
+      },
+      "required": ["name", "role"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Upcoming academy events",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "description": { "type": "string" },
+        "registrationEnabled": { "type": "boolean" }
+      },
+      "required": ["title", "date"]
+    },
+    "GalleryItem": {
+      "title": "Gallery Item",
+      "description": "Images for the gallery",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "url": { "type": "string" },
+        "category": { "type": "string" }
+      },
+      "required": ["url", "category"]
+    },
+    "Booking": {
+      "title": "Facility Booking",
+      "description": "Facility rental reservations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "facilityType": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "startTime": { "type": "string" },
+        "endTime": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "cancelled"] }
+      },
+      "required": ["userId", "facilityType", "date", "startTime", "endTime"]
+    },
+    "Camp": {
+      "title": "Camp",
+      "description": "Summer or holiday camps",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "type": { "type": "string" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "fullPrice": { "type": "number" },
+        "weeklyPrice": { "type": "number" },
+        "activities": { "type": "array", "items": { "type": "string" } },
+        "posterUrl": { "type": "string" },
+        "details": { "type": "string" }
+      },
+      "required": ["title", "startDate", "endDate"]
+    },
+    "Registration": {
+      "title": "Registration",
+      "description": "User registrations for programs, events, or camps",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["program", "event", "camp"] },
+        "targetId": { "type": "string" },
+        "parentName": { "type": "string" },
+        "childName": { "type": "string" },
+        "age": { "type": "number" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "program": { "type": "string" },
+        "registrationType": { "type": "string", "enum": ["full", "weekly"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["type", "targetId", "email", "phone"]
+    },
+    "Update": {
+      "title": "Latest Update",
+      "description": "News and updates",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "content": { "type": "string" },
+        "date": { "type": "string", "format": "date" }
+      },
+      "required": ["content", "date"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile and roles",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] }
+      },
+      "required": ["uid", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/programs/{programId}": { "schema": "Program", "description": "Training programs" },
+    "/coaches/{coachId}": { "schema": "Coach", "description": "Academy coaches" },
+    "/events/{eventId}": { "schema": "Event", "description": "Academy events" },
+    "/gallery/{itemId}": { "schema": "GalleryItem", "description": "Gallery images" },
+    "/bookings/{bookingId}": { "schema": "Booking", "description": "Facility bookings" },
+    "/camps/{campId}": { "schema": "Camp", "description": "Camps (summer/holiday)" },
+    "/registrations/{regId}": { "schema": "Registration", "description": "User registrations" },
+    "/updates/{updateId}": { "schema": "Update", "description": "Latest updates" },
+    "/users/{userId}": { "schema": "User", "description": "User profiles" }
+  }
+}

@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #15803d; /* green-700 */
+  --color-primary-dark: #166534; /* green-800 */
+  --color-primary-light: #22c55e; /* green-500 */
+  --color-accent: #84cc16; /* lime-500 */
+  --color-accent-dark: #65a30d; /* lime-600 */
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-neutral-50 text-neutral-900 font-sans transition-colors duration-300;
+  }
+  
+  .dark body {
+    @apply bg-neutral-950 text-neutral-100;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-6 py-3 rounded-full font-semibold transition-all duration-200 inline-flex items-center justify-center gap-2;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-dark shadow-lg hover:shadow-xl active:scale-95;
+  }
+  
+  .btn-accent {
+    @apply bg-accent text-white hover:bg-accent-dark shadow-lg hover:shadow-xl active:scale-95;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-primary text-primary hover:bg-primary hover:text-white active:scale-95;
+  }
+  
+  .dark .btn-outline {
+    @apply border-primary-light text-primary-light hover:bg-primary-light hover:text-white;
+  }
+  
+  .card {
+    @apply bg-white rounded-2xl shadow-md overflow-hidden border border-neutral-100 transition-all duration-300 hover:shadow-xl;
+  }
+  
+  .dark .card {
+    @apply bg-neutral-900 border-neutral-800 shadow-none;
+  }
+  
+  .section-padding {
+    @apply py-20 px-4 md:px-8 max-w-7xl mx-auto;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border border-neutral-200 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all;
+  }
+  
+  .dark .input-field {
+    @apply bg-neutral-800 border-neutral-700 text-white focus:ring-primary-light;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/30 rounded-full hover:bg-primary/50 transition-colors;
+}
+
